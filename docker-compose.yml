@@ -1,0 +1,25 @@
+services:
+  mast3r_slam:
+    build:
+      context: $MKFILE_DIR/
+      dockerfile: $MKFILE_DIR/docker/mast3r_slam.Dockerfile
+    image: open_semantic/mast3r_slam:latest
+    restart: unless-stopped
+    network_mode: host
+    ipc: host
+    environment:
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - DISPLAY=$DISPLAY
+      - VGL_DISPLAY=${RENDER_DISPLAY:-":1"}
+    volumes:
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+      - $ROOT_DIR/:/home/docker_user/mast3r_slam
+      - $DATA_DIR:/data/
+      - $MKFILE_DIR/export:/export/
+      - $MKFILE_DIR/scripts:/scripts/
+      - $MKFILE_DIR/results:/results/
+    runtime: nvidia
+    privileged: true
+    command: bash
